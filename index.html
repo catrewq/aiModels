@@ -1,0 +1,4086 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EC灼厂 - 电商AI创作平台</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-deep: #0a0a0f;
+            --bg-card: #12121a;
+            --bg-elevated: #1a1a25;
+            --bg-input: #0f0f15;
+            --border: rgba(255,255,255,0.08);
+            --border-hover: rgba(255,255,255,0.15);
+            --border-glow: rgba(139,92,246,0.5);
+            --primary: #8b5cf6;
+            --primary-light: #a78bfa;
+            --primary-dark: #7c3aed;
+            --accent: #06b6d4;
+            --accent-warm: #f472b6;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --gradient-primary: linear-gradient(135deg, #8b5cf6 0%, #06b6d4 100%);
+            --gradient-warm: linear-gradient(135deg, #f472b6 0%, #f59e0b 100%);
+            --shadow-glow: 0 0 40px rgba(139,92,246,0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans SC', -apple-system, sans-serif;
+            background: var(--bg-deep);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* 背景装饰 */
+        .bg-decoration {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .bg-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.4;
+            animation: float 20s ease-in-out infinite;
+        }
+
+        .bg-orb-1 {
+            width: 600px;
+            height: 600px;
+            background: var(--primary);
+            top: -200px;
+            right: -100px;
+            animation-delay: 0s;
+        }
+
+        .bg-orb-2 {
+            width: 500px;
+            height: 500px;
+            background: var(--accent);
+            bottom: -150px;
+            left: -100px;
+            animation-delay: -7s;
+        }
+
+        .bg-orb-3 {
+            width: 300px;
+            height: 300px;
+            background: var(--accent-warm);
+            top: 50%;
+            left: 50%;
+            animation-delay: -14s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(30px, -30px) scale(1.05); }
+            50% { transform: translate(-20px, 20px) scale(0.95); }
+            75% { transform: translate(20px, 10px) scale(1.02); }
+        }
+
+        /* 导航栏 */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 64px;
+            background: rgba(10, 10, 15, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+            z-index: 100;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--gradient-primary);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .logo-text {
+            font-size: 20px;
+            font-weight: 700;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .logo-sub {
+            font-size: 11px;
+            color: var(--text-muted);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 8px;
+            background: var(--bg-card);
+            padding: 4px;
+            border-radius: 12px;
+        }
+
+        .nav-tab {
+            padding: 10px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            border: none;
+            background: transparent;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-tab:hover {
+            color: var(--text-primary);
+            background: rgba(255,255,255,0.05);
+        }
+
+        .nav-tab.active {
+            background: var(--gradient-primary);
+            color: white;
+            box-shadow: 0 4px 15px rgba(139,92,246,0.4);
+        }
+
+        .nav-tab svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .user-area {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #f472b6, #8b5cf6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        /* 主内容区 */
+        .main-content {
+            padding-top: 80px;
+            padding-bottom: 40px;
+            min-height: 100vh;
+            position: relative;
+            z-index: 1;
+        }
+
+        .module-container {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .module-container.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 智能生图模块 */
+        .generate-module {
+            display: grid;
+            grid-template-columns: 320px 1fr 280px;
+            gap: 24px;
+            padding: 0 32px;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .panel {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
+        }
+
+        .panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .panel-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .panel-title svg {
+            width: 18px;
+            height: 18px;
+            color: var(--primary);
+        }
+
+        .section-label {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            margin-top: 20px;
+        }
+
+        /* 参数选择器 */
+        .option-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+
+        .option-card {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 12px 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        .option-card:hover {
+            border-color: var(--border-hover);
+            background: rgba(139,92,246,0.1);
+        }
+
+        .option-card.selected {
+            border-color: var(--primary);
+            background: rgba(139,92,246,0.15);
+            color: var(--primary-light);
+            box-shadow: 0 0 20px rgba(139,92,246,0.2);
+        }
+
+        .option-card .icon {
+            font-size: 24px;
+            margin-bottom: 6px;
+        }
+
+        /* 模特选择 */
+        .model-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+        }
+
+        .model-avatar {
+            aspect-ratio: 1;
+            border-radius: 10px;
+            background: var(--bg-elevated);
+            border: 2px solid var(--border);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            overflow: hidden;
+        }
+
+        .model-avatar:hover {
+            border-color: var(--border-hover);
+            transform: scale(1.05);
+        }
+
+        .model-avatar.selected {
+            border-color: var(--primary);
+            box-shadow: 0 0 20px rgba(139,92,246,0.4);
+        }
+
+        /* 场景选择 */
+        .scene-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .scene-card {
+            aspect-ratio: 16/10;
+            border-radius: 10px;
+            background: var(--bg-elevated);
+            border: 2px solid var(--border);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .scene-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            opacity: 0.6;
+        }
+
+        .scene-card:nth-child(1)::before { background: linear-gradient(135deg, #2d1b4e, #4a2c7a); }
+        .scene-card:nth-child(2)::before { background: linear-gradient(135deg, #1a3a4a, #2d5a6a); }
+        .scene-card:nth-child(3)::before { background: linear-gradient(135deg, #1a4a2d, #2d7a4a); }
+        .scene-card:nth-child(4)::before { background: linear-gradient(135deg, #4a4a1a, #7a7a2d); }
+
+        .scene-card .label {
+            position: relative;
+            z-index: 1;
+            font-size: 12px;
+            font-weight: 500;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .scene-card:hover {
+            transform: scale(1.02);
+            border-color: var(--border-hover);
+        }
+
+        .scene-card.selected {
+            border-color: var(--primary);
+            box-shadow: 0 0 25px rgba(139,92,246,0.4);
+        }
+
+        /* 构图比例 */
+        .ratio-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .ratio-btn {
+            flex: 1;
+            padding: 10px;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .ratio-btn:hover {
+            border-color: var(--border-hover);
+        }
+
+        .ratio-btn.selected {
+            border-color: var(--primary);
+            background: rgba(139,92,246,0.1);
+        }
+
+        .ratio-icon {
+            width: 24px;
+            height: 24px;
+            border: 2px solid currentColor;
+            border-radius: 4px;
+        }
+
+        .ratio-btn:nth-child(1) .ratio-icon { width: 20px; height: 11px; }
+        .ratio-btn:nth-child(2) .ratio-icon { width: 16px; height: 12px; }
+        .ratio-btn:nth-child(3) .ratio-icon { width: 12px; height: 12px; }
+        .ratio-btn:nth-child(4) .ratio-icon { width: 9px; height: 12px; }
+
+        .ratio-btn span {
+            font-size: 10px;
+            color: var(--text-muted);
+        }
+
+        .ratio-btn.selected span {
+            color: var(--primary-light);
+        }
+
+        /* 光影风格 */
+        .light-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .light-card {
+            padding: 14px;
+            border-radius: 10px;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .light-card:hover {
+            border-color: var(--border-hover);
+            transform: translateY(-2px);
+        }
+
+        .light-card.selected {
+            border-color: var(--primary);
+            background: rgba(139,92,246,0.1);
+        }
+
+        .light-card .light-preview {
+            width: 100%;
+            height: 40px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+        }
+
+        .light-card:nth-child(1) .light-preview { background: linear-gradient(180deg, #fff8e7 0%, #ffe4b5 100%); }
+        .light-card:nth-child(2) .light-preview { background: linear-gradient(135deg, #1a1a2e 0%, #e94560 100%); }
+        .light-card:nth-child(3) .light-preview { background: linear-gradient(180deg, #e8e8e8 0%, #b8b8b8 100%); }
+        .light-card:nth-child(4) .light-preview { background: linear-gradient(135deg, #ffd700 0%, #ff8c00 50%, #1a1a2e 100%); }
+
+        .light-card .light-name {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .light-card.selected .light-name {
+            color: var(--primary-light);
+        }
+
+        /* 颜色选择器 */
+        .color-picker-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .color-swatch {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        .color-swatch:hover {
+            transform: scale(1.1);
+        }
+
+        .color-swatch.selected {
+            border-color: white;
+            box-shadow: 0 0 15px currentColor;
+        }
+
+        /* 中央预览区 */
+        .preview-area {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .preview-canvas {
+            flex: 1;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .preview-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .preview-title {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .preview-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .preview-btn {
+            padding: 6px 12px;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text-secondary);
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .preview-btn:hover {
+            background: var(--bg-card);
+            border-color: var(--border-hover);
+            color: var(--text-primary);
+        }
+
+        .preview-btn svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .preview-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            position: relative;
+        }
+
+        .preview-placeholder {
+            text-align: center;
+            color: var(--text-muted);
+        }
+
+        .preview-placeholder .icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background: var(--bg-elevated);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            opacity: 0.5;
+        }
+
+        .preview-placeholder p {
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .preview-placeholder span {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        /* 生成结果展示 */
+        .generated-result {
+            display: none;
+        }
+
+        .generated-result.show {
+            display: block;
+            animation: scaleIn 0.5s ease;
+        }
+
+        @keyframes scaleIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .result-image {
+            width: 100%;
+            aspect-ratio: 16/10;
+            border-radius: 12px;
+            overflow: hidden;
+            background: linear-gradient(135deg, #1a1a2e 0%, #2d2d4a 50%, #4a3a6a 100%);
+            position: relative;
+        }
+
+        .result-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .result-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, 
+                rgba(139,92,246,0.3) 0%, 
+                rgba(6,182,212,0.3) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .result-info {
+            background: rgba(0,0,0,0.8);
+            padding: 10px 16px;
+            border-radius: 8px;
+            backdrop-filter: blur(10px);
+            text-align: center;
+        }
+
+        .result-info .tag {
+            font-size: 10px;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .result-info h4 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-top: 4px;
+        }
+
+        /* 生成按钮 */
+        .generate-btn {
+            width: 100%;
+            padding: 18px;
+            background: var(--gradient-primary);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .generate-btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, transparent 0%, rgba(255,255,255,0.2) 50%, transparent 100%);
+            transform: translateX(-100%);
+            transition: transform 0.5s ease;
+        }
+
+        .generate-btn:hover::before {
+            transform: translateX(100%);
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .generate-btn:active {
+            transform: translateY(0);
+        }
+
+        .generate-btn.loading {
+            pointer-events: none;
+        }
+
+        .generate-btn.loading .btn-text {
+            opacity: 0;
+        }
+
+        .generate-btn .spinner {
+            position: absolute;
+            display: none;
+        }
+
+        .generate-btn.loading .spinner {
+            display: block;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .generate-btn .progress-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 3px;
+            background: rgba(255,255,255,0.5);
+            width: 0%;
+            transition: width 3s ease;
+        }
+
+        .generate-btn.loading .progress-bar {
+            width: 100%;
+        }
+
+        /* 提示词展示 */
+        .prompt-display {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 16px;
+            margin-top: 16px;
+        }
+
+        .prompt-display .label {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .prompt-display .label svg {
+            width: 14px;
+            height: 14px;
+            color: var(--primary);
+        }
+
+        .prompt-text {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .prompt-text .highlight {
+            color: var(--primary-light);
+            background: rgba(139,92,246,0.15);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        /* 变体区域 */
+        .variants-section {
+            margin-top: 20px;
+        }
+
+        .variants-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .variants-title {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .variants-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        .variant-card {
+            aspect-ratio: 1;
+            border-radius: 10px;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .variant-card:hover {
+            border-color: var(--primary);
+            transform: scale(1.03);
+        }
+
+        .variant-card .variant-bg {
+            width: 100%;
+            height: 100%;
+            opacity: 0.7;
+        }
+
+        .variant-card:nth-child(1) .variant-bg { background: linear-gradient(135deg, #2d1b4e, #4a2c7a); }
+        .variant-card:nth-child(2) .variant-bg { background: linear-gradient(135deg, #1a3a4a, #2d5a6a); }
+        .variant-card:nth-child(3) .variant-bg { background: linear-gradient(135deg, #4a1a2d, #7a2d4a); }
+        .variant-card:nth-child(4) .variant-bg { background: linear-gradient(135deg, #1a4a2d, #2d7a4a); }
+
+        .variant-card .variant-label {
+            position: absolute;
+            bottom: 8px;
+            left: 8px;
+            font-size: 10px;
+            background: rgba(0,0,0,0.7);
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+
+        /* 右侧素材区 */
+        .templates-section {
+            margin-top: 16px;
+        }
+
+        .template-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .template-card {
+            aspect-ratio: 1;
+            border-radius: 10px;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .template-card:hover {
+            border-color: var(--primary);
+            transform: scale(1.02);
+        }
+
+        .template-card .template-bg {
+            width: 100%;
+            height: 70%;
+        }
+
+        .template-card:nth-child(1) .template-bg { background: linear-gradient(180deg, #8b5cf6 0%, #1a1a2e 100%); }
+        .template-card:nth-child(2) .template-bg { background: linear-gradient(180deg, #06b6d4 0%, #1a1a2e 100%); }
+        .template-card:nth-child(3) .template-bg { background: linear-gradient(180deg, #f472b6 0%, #1a1a2e 100%); }
+        .template-card:nth-child(4) .template-bg { background: linear-gradient(180deg, #10b981 0%, #1a1a2e 100%); }
+
+        .template-card .template-label {
+            padding: 8px;
+            font-size: 10px;
+            color: var(--text-secondary);
+            text-align: center;
+        }
+
+        /* 印花上传区 */
+        .upload-zone {
+            border: 2px dashed var(--border);
+            border-radius: 10px;
+            padding: 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .upload-zone:hover {
+            border-color: var(--primary);
+            background: rgba(139,92,246,0.05);
+        }
+
+        .upload-zone .icon {
+            font-size: 28px;
+            margin-bottom: 8px;
+            opacity: 0.5;
+        }
+
+        .upload-zone p {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .upload-zone .upload-hint {
+            font-size: 10px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        /* ============ 视频复刻模块 ============ */
+        .video-module {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 32px;
+        }
+
+        .video-hero {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: fadeIn 0.6s ease;
+        }
+
+        .video-hero h2 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .video-hero p {
+            color: var(--text-secondary);
+            font-size: 16px;
+        }
+
+        .video-input-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .video-upload-zone {
+            background: var(--bg-card);
+            border: 2px dashed var(--border);
+            border-radius: 16px;
+            padding: 48px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .video-upload-zone:hover {
+            border-color: var(--primary);
+            background: rgba(139,92,246,0.05);
+        }
+
+        .video-upload-zone .upload-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background: var(--bg-elevated);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+        }
+
+        .video-upload-zone h4 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .video-upload-zone p {
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+
+        .url-input-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+        }
+
+        .url-input-section h4 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .url-input-section h4 svg {
+            width: 18px;
+            height: 18px;
+            color: var(--accent);
+        }
+
+        .url-input-group {
+            display: flex;
+            gap: 12px;
+        }
+
+        .url-input {
+            flex: 1;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 14px 16px;
+            color: var(--text-primary);
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .url-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .url-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(139,92,246,0.2);
+        }
+
+        .url-paste-btn {
+            padding: 14px 24px;
+            background: var(--gradient-primary);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .url-paste-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .platform-icons {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .platform-icon {
+            padding: 6px 12px;
+            background: var(--bg-elevated);
+            border-radius: 6px;
+            font-size: 12px;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* 分析结果区 */
+        .analysis-results {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .analysis-results.show {
+            display: block;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .analysis-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+        }
+
+        .analysis-card h4 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .analysis-card h4 svg {
+            width: 18px;
+            height: 18px;
+            color: var(--primary);
+        }
+
+        .script-display {
+            background: var(--bg-elevated);
+            border-radius: 10px;
+            padding: 16px;
+            font-size: 13px;
+            line-height: 1.8;
+            color: var(--text-secondary);
+        }
+
+        .script-line {
+            padding: 8px 12px;
+            margin: 4px -12px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .script-line:hover {
+            background: rgba(139,92,246,0.1);
+        }
+
+        .script-line .timestamp {
+            color: var(--accent);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            margin-right: 8px;
+        }
+
+        /* 视频预览拼图 */
+        .video-preview-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+        }
+
+        .preview-frame {
+            aspect-ratio: 9/16;
+            background: var(--bg-elevated);
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .preview-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .preview-frame .frame-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 6px;
+            background: linear-gradient(transparent, rgba(0,0,0,0.8));
+            font-size: 10px;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--accent);
+        }
+
+        /* 高光时间轴 */
+        .highlights-timeline {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 32px;
+        }
+
+        .timeline-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .timeline-header h4 {
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .timeline-header h4 svg {
+            width: 18px;
+            height: 18px;
+            color: var(--warning);
+        }
+
+        .timeline-track {
+            height: 60px;
+            background: var(--bg-elevated);
+            border-radius: 10px;
+            position: relative;
+            margin-bottom: 12px;
+        }
+
+        .timeline-bar {
+            position: absolute;
+            top: 50%;
+            left: 20px;
+            right: 20px;
+            height: 4px;
+            background: var(--border);
+            border-radius: 2px;
+            transform: translateY(-50%);
+        }
+
+        .timeline-progress {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            border-radius: 10px;
+            width: 35%;
+        }
+
+        .timeline-node {
+            position: absolute;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 16px;
+            height: 16px;
+            background: var(--warning);
+            border-radius: 50%;
+            border: 3px solid var(--bg-card);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            z-index: 2;
+        }
+
+        .timeline-node:hover {
+            transform: translate(-50%, -50%) scale(1.3);
+            box-shadow: 0 0 20px var(--warning);
+        }
+
+        .timeline-node:nth-child(2) { left: 25%; }
+        .timeline-node:nth-child(3) { left: 45%; }
+        .timeline-node:nth-child(4) { left: 65%; }
+        .timeline-node:nth-child(5) { left: 85%; }
+
+        .highlights-list {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        .highlight-item {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .highlight-item:hover {
+            border-color: var(--warning);
+            transform: translateY(-2px);
+        }
+
+        .highlight-item .time {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: var(--warning);
+            margin-bottom: 6px;
+        }
+
+        .highlight-item .desc {
+            font-size: 12px;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        /* 生成视频控制 */
+        .video-generate-controls {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+        }
+
+        .control-row {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            margin-bottom: 20px;
+        }
+
+        .control-group {
+            flex: 1;
+        }
+
+        .control-group label {
+            font-size: 12px;
+            color: var(--text-muted);
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .style-tags {
+            display: flex;
+            gap: 8px;
+        }
+
+        .style-tag {
+            padding: 8px 16px;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .style-tag:hover {
+            border-color: var(--border-hover);
+        }
+
+        .style-tag.selected {
+            background: var(--gradient-primary);
+            border-color: transparent;
+            color: white;
+        }
+
+        .duration-slider {
+            width: 100%;
+            height: 6px;
+            background: var(--bg-elevated);
+            border-radius: 3px;
+            appearance: none;
+            cursor: pointer;
+        }
+
+        .duration-slider::-webkit-slider-thumb {
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            background: var(--gradient-primary);
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(139,92,246,0.4);
+        }
+
+        .duration-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            color: var(--primary-light);
+            margin-top: 8px;
+        }
+
+        .generate-video-btn {
+            width: 100%;
+            padding: 18px;
+            background: var(--gradient-warm);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .generate-video-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 40px rgba(244,114,182,0.4);
+        }
+
+        /* ============ AI助手模块 ============ */
+        .agent-module {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 32px;
+        }
+
+        .agent-hero {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .agent-hero h2 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            background: var(--gradient-warm);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .agent-hero p {
+            color: var(--text-secondary);
+            font-size: 16px;
+        }
+
+        .agent-workspace {
+            display: grid;
+            grid-template-columns: 1fr 360px;
+            gap: 24px;
+        }
+
+        /* 对话区 */
+        .chat-container {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            height: 600px;
+        }
+
+        .chat-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .chat-header h4 {
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .chat-header h4 .status-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--success);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .multimodal-badges {
+            display: flex;
+            gap: 6px;
+        }
+
+        .modal-badge {
+            padding: 4px 8px;
+            background: var(--bg-elevated);
+            border-radius: 4px;
+            font-size: 10px;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .modal-badge.active {
+            background: rgba(139,92,246,0.2);
+            color: var(--primary-light);
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .message {
+            display: flex;
+            gap: 12px;
+            animation: messageIn 0.3s ease;
+        }
+
+        @keyframes messageIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message.user {
+            flex-direction: row-reverse;
+        }
+
+        .message-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .message.user .message-avatar {
+            background: var(--gradient-primary);
+        }
+
+        .message.ai .message-avatar {
+            background: var(--gradient-warm);
+        }
+
+        .message-content {
+            max-width: 70%;
+        }
+
+        .message.user .message-content {
+            text-align: right;
+        }
+
+        .message-bubble {
+            background: var(--bg-elevated);
+            border-radius: 12px;
+            padding: 12px 16px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .message.user .message-bubble {
+            background: var(--gradient-primary);
+            border-bottom-right-radius: 4px;
+        }
+
+        .message.ai .message-bubble {
+            border-bottom-left-radius: 4px;
+        }
+
+        .message-time {
+            font-size: 10px;
+            color: var(--text-muted);
+            margin-top: 6px;
+        }
+
+        .message.user .message-time {
+            text-align: right;
+        }
+
+        /* AI思考过程 */
+        .thinking-process {
+            background: var(--bg-elevated);
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 12px;
+        }
+
+        .thinking-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .thinking-dots {
+            display: flex;
+            gap: 4px;
+        }
+
+        .thinking-dots span {
+            width: 6px;
+            height: 6px;
+            background: var(--primary);
+            border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out;
+        }
+
+        .thinking-dots span:nth-child(1) { animation-delay: -0.32s; }
+        .thinking-dots span:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+
+        .thinking-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .thinking-item {
+            padding: 6px 12px;
+            background: rgba(139,92,246,0.1);
+            border: 1px solid rgba(139,92,246,0.2);
+            border-radius: 20px;
+            font-size: 11px;
+            color: var(--primary-light);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .thinking-item svg {
+            width: 12px;
+            height: 12px;
+        }
+
+        /* 上下文记忆 */
+        .context-memory {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px;
+            margin-top: 12px;
+        }
+
+        .context-memory .label {
+            font-size: 10px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .memory-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .memory-tag {
+            padding: 4px 10px;
+            background: var(--bg-elevated);
+            border-radius: 4px;
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        /* 输入区 */
+        .chat-input-area {
+            padding: 16px 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        .input-wrapper {
+            display: flex;
+            gap: 12px;
+            align-items: flex-end;
+        }
+
+        .chat-input {
+            flex: 1;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 14px 16px;
+            color: var(--text-primary);
+            font-size: 14px;
+            resize: none;
+            min-height: 48px;
+            max-height: 120px;
+            font-family: inherit;
+            transition: all 0.2s ease;
+        }
+
+        .chat-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .chat-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(139,92,246,0.2);
+        }
+
+        .input-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .input-btn {
+            width: 48px;
+            height: 48px;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .input-btn:hover {
+            background: var(--bg-card);
+            border-color: var(--border-hover);
+            color: var(--text-primary);
+        }
+
+        .input-btn svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .send-btn {
+            background: var(--gradient-primary);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .send-btn:hover {
+            transform: scale(1.05);
+            box-shadow: var(--shadow-glow);
+        }
+
+        /* 动态表单区 */
+        .dynamic-form-panel {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .form-panel-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .form-panel-header h4 {
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-panel-header h4 svg {
+            width: 18px;
+            height: 18px;
+            color: var(--accent-warm);
+        }
+
+        .form-badge {
+            padding: 4px 10px;
+            background: rgba(244,114,182,0.2);
+            border-radius: 20px;
+            font-size: 10px;
+            color: var(--accent-warm);
+        }
+
+        .dynamic-form-content {
+            padding: 20px;
+        }
+
+        .form-intro {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-muted);
+        }
+
+        .form-intro .icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        .form-intro p {
+            font-size: 14px;
+        }
+
+        /* 动态表单 */
+        .dynamic-form {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            animation: formIn 0.5s ease;
+        }
+
+        @keyframes formIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .form-field {
+            animation: fieldIn 0.3s ease backwards;
+        }
+
+        @keyframes fieldIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-field:nth-child(1) { animation-delay: 0.1s; }
+        .form-field:nth-child(2) { animation-delay: 0.2s; }
+        .form-field:nth-child(3) { animation-delay: 0.3s; }
+        .form-field:nth-child(4) { animation-delay: 0.4s; }
+
+        .form-label {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .form-label .required {
+            color: var(--error);
+        }
+
+        .form-input {
+            width: 100%;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 12px 14px;
+            color: var(--text-primary);
+            font-size: 14px;
+            font-family: inherit;
+            transition: all 0.2s ease;
+        }
+
+        .form-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(139,92,246,0.2);
+        }
+
+        .form-select {
+            width: 100%;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 12px 14px;
+            color: var(--text-primary);
+            font-size: 14px;
+            font-family: inherit;
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+        }
+
+        .form-select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .form-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .form-option {
+            padding: 10px 16px;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .form-option:hover {
+            border-color: var(--border-hover);
+            background: rgba(139,92,246,0.05);
+        }
+
+        .form-option.selected {
+            background: rgba(139,92,246,0.15);
+            border-color: var(--primary);
+            color: var(--primary-light);
+        }
+
+        /* 生成结果区 */
+        .form-results {
+            margin-top: 20px;
+            display: none;
+        }
+
+        .form-results.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .results-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+            font-size: 13px;
+            color: var(--success);
+        }
+
+        .results-header svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .generated-preview {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .preview-item {
+            aspect-ratio: 1;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .preview-item::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+        }
+
+        .preview-item:nth-child(1)::before { background: linear-gradient(135deg, #4a3a6a, #8b5cf6); }
+        .preview-item:nth-child(2)::before { background: linear-gradient(135deg, #2a4a5a, #06b6d4); }
+        .preview-item:nth-child(3)::before { background: linear-gradient(135deg, #5a3a4a, #f472b6); }
+
+        .preview-item .overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .preview-item:hover .overlay {
+            opacity: 1;
+        }
+
+        .preview-item .overlay svg {
+            width: 24px;
+            height: 24px;
+            color: white;
+        }
+
+        .copy-btn {
+            margin-top: 16px;
+            width: 100%;
+            padding: 14px;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .copy-btn:hover {
+            background: rgba(139,92,246,0.1);
+            border-color: var(--primary);
+        }
+
+        .copy-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* 响应式 */
+        @media (max-width: 1200px) {
+            .generate-module {
+                grid-template-columns: 1fr;
+            }
+            
+            .generate-module > div:first-child {
+                order: 2;
+            }
+            
+            .generate-module > div:nth-child(2) {
+                order: 1;
+            }
+            
+            .generate-module > div:last-child {
+                order: 3;
+            }
+        }
+
+        /* 滚动条 */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--border-hover);
+        }
+
+        /* 选中效果 */
+        ::selection {
+            background: rgba(139,92,246,0.3);
+            color: white;
+        }
+
+        /* Toast 通知系统 */
+        .toast-container {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .toast {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px 20px;
+            min-width: 300px;
+            max-width: 400px;
+            backdrop-filter: blur(20px);
+            animation: slideInRight 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOutRight {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+
+        .toast.hiding {
+            animation: slideOutRight 0.3s ease forwards;
+        }
+
+        .toast-icon {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+        }
+
+        .toast.success {
+            border-color: var(--success);
+        }
+
+        .toast.success .toast-icon {
+            color: var(--success);
+        }
+
+        .toast.error {
+            border-color: var(--error);
+        }
+
+        .toast.error .toast-icon {
+            color: var(--error);
+        }
+
+        .toast.warning {
+            border-color: var(--warning);
+        }
+
+        .toast.warning .toast-icon {
+            color: var(--warning);
+        }
+
+        .toast.info {
+            border-color: var(--primary);
+        }
+
+        .toast.info .toast-icon {
+            color: var(--primary);
+        }
+
+        .toast-message {
+            flex: 1;
+            font-size: 14px;
+            color: var(--text-primary);
+        }
+
+        .toast-close {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.2s;
+        }
+
+        .toast-close:hover {
+            color: var(--text-primary);
+        }
+    </style>
+</head>
+<body>
+    <!-- 背景装饰 -->
+    <div class="bg-decoration">
+        <div class="bg-orb bg-orb-1"></div>
+        <div class="bg-orb bg-orb-2"></div>
+        <div class="bg-orb bg-orb-3"></div>
+    </div>
+
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="logo">
+            <div class="logo-icon">EC</div>
+            <div>
+                <div class="logo-text">EC灼厂</div>
+                <div class="logo-sub">AI Creative Studio</div>
+            </div>
+        </div>
+
+        <div class="nav-tabs">
+            <button class="nav-tab active" data-module="generate">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="18" height="18" rx="2"/>
+                    <circle cx="8.5" cy="8.5" r="1.5"/>
+                    <path d="M21 15l-5-5L5 21"/>
+                </svg>
+                智能生图
+            </button>
+            <button class="nav-tab" data-module="video">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polygon points="23 7 16 12 23 17 23 7"/>
+                    <rect x="1" y="5" width="15" height="14" rx="2"/>
+                </svg>
+                视频复刻
+            </button>
+            <button class="nav-tab" data-module="agent">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2a10 10 0 1 0 10 10H12V2z"/>
+                    <path d="M12 2a10 10 0 0 1 10 10"/>
+                    <circle cx="12" cy="12" r="6"/>
+                </svg>
+                AI助手
+            </button>
+        </div>
+
+        <div class="user-area">
+            <div class="user-avatar">李</div>
+        </div>
+    </nav>
+
+    <!-- 主内容区 -->
+    <main class="main-content">
+        <!-- 模块一：智能生图 -->
+        <section class="module-container generate-module active" id="module-generate">
+            <!-- 左侧参数面板 -->
+            <div class="panel param-panel">
+                <div class="panel-header">
+                    <div class="panel-title">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="3"/>
+                            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                        </svg>
+                        参数配置
+                    </div>
+                </div>
+
+                <div class="section-label">选择模特</div>
+                <div class="model-grid">
+                    <div class="model-avatar selected" data-model="asian-female" title="亚洲女性">👩</div>
+                    <div class="model-avatar" data-model="asian-male" title="亚洲男性">👨</div>
+                    <div class="model-avatar" data-model="western-female" title="欧美女性">👩‍🦰</div>
+                    <div class="model-avatar" data-model="virtual" title="虚拟模特">🤖</div>
+                </div>
+
+                <div class="section-label">选择场景</div>
+                <div class="scene-grid">
+                    <div class="scene-card selected" data-scene="indoor">
+                        <span class="label">室内棚拍</span>
+                    </div>
+                    <div class="scene-card" data-scene="street">
+                        <span class="label">街拍外景</span>
+                    </div>
+                    <div class="scene-card" data-scene="nature">
+                        <span class="label">自然风光</span>
+                    </div>
+                    <div class="scene-card" data-scene="creative">
+                        <span class="label">创意场景</span>
+                    </div>
+                </div>
+
+                <div class="section-label">构图比例</div>
+                <div class="ratio-buttons">
+                    <button class="ratio-btn selected" data-ratio="16:9">
+                        <div class="ratio-icon"></div>
+                        <span>16:9</span>
+                    </button>
+                    <button class="ratio-btn" data-ratio="4:3">
+                        <div class="ratio-icon"></div>
+                        <span>4:3</span>
+                    </button>
+                    <button class="ratio-btn" data-ratio="1:1">
+                        <div class="ratio-icon"></div>
+                        <span>1:1</span>
+                    </button>
+                    <button class="ratio-btn" data-ratio="3:4">
+                        <div class="ratio-icon"></div>
+                        <span>3:4</span>
+                    </button>
+                </div>
+
+                <div class="section-label">光影风格</div>
+                <div class="light-grid">
+                    <div class="light-card selected" data-light="natural">
+                        <div class="light-preview"></div>
+                        <div class="light-name">自然光</div>
+                    </div>
+                    <div class="light-card" data-light="dramatic">
+                        <div class="light-preview"></div>
+                        <div class="light-name">戏剧光</div>
+                    </div>
+                    <div class="light-card" data-light="soft">
+                        <div class="light-preview"></div>
+                        <div class="light-name">柔光</div>
+                    </div>
+                    <div class="light-card" data-light="rembrandt">
+                        <div class="light-preview"></div>
+                        <div class="light-name">伦勃朗</div>
+                    </div>
+                </div>
+
+                <div class="section-label">B版配色</div>
+                <div class="color-picker-row">
+                    <div class="color-swatch selected" style="background: #8b5cf6;" data-color="#8b5cf6"></div>
+                    <div class="color-swatch" style="background: #06b6d4;" data-color="#06b6d4"></div>
+                    <div class="color-swatch" style="background: #f472b6;" data-color="#f472b6"></div>
+                    <div class="color-swatch" style="background: #10b981;" data-color="#10b981"></div>
+                    <div class="color-swatch" style="background: #f59e0b;" data-color="#f59e0b"></div>
+                    <div class="color-swatch" style="background: #ef4444;" data-color="#ef4444"></div>
+                </div>
+
+                <div class="section-label">印花图案 (可选)</div>
+                <div class="upload-zone">
+                    <div class="icon">🎨</div>
+                    <p>拖拽或点击上传图案</p>
+                    <p class="upload-hint">支持 PNG / JPG / SVG</p>
+                </div>
+
+                <button class="generate-btn" id="generateBtn">
+                    <span class="btn-text">🚀 一键生成</span>
+                    <svg class="spinner" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2v4m0 12v4m10-10h-4M6 12H2m15.07-5.07l-2.83 2.83M9.76 14.24l-2.83 2.83m0-10.14l2.83 2.83m4.48 4.48l2.83 2.83"/>
+                    </svg>
+                    <div class="progress-bar"></div>
+                </button>
+            </div>
+
+            <!-- 中央预览区 -->
+            <div class="preview-area">
+                <div class="preview-canvas">
+                    <div class="preview-header">
+                        <span class="preview-title">生成预览</span>
+                        <div class="preview-actions">
+                            <button class="preview-btn">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                    <polyline points="7 10 12 15 17 10"/>
+                                    <line x1="12" y1="15" x2="12" y2="3"/>
+                                </svg>
+                                下载
+                            </button>
+                            <button class="preview-btn">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="3" y="3" width="18" height="18" rx="2"/>
+                                    <path d="M9 3v18"/>
+                                    <path d="M15 3v18"/>
+                                    <path d="M3 9h18"/>
+                                    <path d="M3 15h18"/>
+                                </svg>
+                                应用到详情页
+                            </button>
+                        </div>
+                    </div>
+                    <div class="preview-content">
+                        <div class="preview-placeholder" id="previewPlaceholder">
+                            <div class="icon">✨</div>
+                            <p>配置参数后点击生成</p>
+                            <span>AI 将根据您的选择创建精美商品图</span>
+                        </div>
+                        <div class="generated-result" id="generatedResult">
+                            <div class="result-image">
+                                <div class="result-overlay">
+                                    <div class="result-info">
+                                        <span class="tag">AI Generated</span>
+                                        <h4>电商主图 #001</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="prompt-display">
+                    <div class="label">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                        </svg>
+                        动态提示词
+                    </div>
+                    <div class="prompt-text" id="promptText">
+                        <span class="highlight">亚洲女性模特</span>，<span class="highlight">室内棚拍</span>场景，
+                        <span class="highlight">自然光</span>照明，<span class="highlight">16:9</span>横版构图，
+                        <span class="highlight">紫色主调</span>，专业电商摄影风格，高细节...
+                    </div>
+                </div>
+
+                <div class="variants-section" id="variantsSection" style="display: none;">
+                    <div class="variants-header">
+                        <span class="variants-title">更多变体 · 快速生成</span>
+                    </div>
+                    <div class="variants-grid">
+                        <div class="variant-card">
+                            <div class="variant-bg"></div>
+                            <span class="variant-label">变体 A</span>
+                        </div>
+                        <div class="variant-card">
+                            <div class="variant-bg"></div>
+                            <span class="variant-label">变体 B</span>
+                        </div>
+                        <div class="variant-card">
+                            <div class="variant-bg"></div>
+                            <span class="variant-label">变体 C</span>
+                        </div>
+                        <div class="variant-card">
+                            <div class="variant-bg"></div>
+                            <span class="variant-label">变体 D</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 右侧模板区 -->
+            <div class="panel template-panel">
+                <div class="panel-header">
+                    <div class="panel-title">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
+                            <polyline points="14 2 14 8 20 8"/>
+                        </svg>
+                        精选模板
+                    </div>
+                </div>
+
+                <div class="section-label">爆款模板</div>
+                <div class="template-grid">
+                    <div class="template-card">
+                        <div class="template-bg"></div>
+                        <div class="template-label">时尚潮流</div>
+                    </div>
+                    <div class="template-card">
+                        <div class="template-bg"></div>
+                        <div class="template-label">简约高级</div>
+                    </div>
+                    <div class="template-card">
+                        <div class="template-bg"></div>
+                        <div class="template-label">活力运动</div>
+                    </div>
+                    <div class="template-card">
+                        <div class="template-bg"></div>
+                        <div class="template-label">轻奢优雅</div>
+                    </div>
+                </div>
+
+                <div class="section-label">近期使用</div>
+                <div class="template-grid">
+                    <div class="template-card">
+                        <div class="template-bg"></div>
+                        <div class="template-label">上周使用</div>
+                    </div>
+                    <div class="template-card">
+                        <div class="template-bg"></div>
+                        <div class="template-label">上周使用</div>
+                    </div>
+                </div>
+
+                <div class="section-label">热门场景</div>
+                <div class="option-grid">
+                    <div class="option-card">
+                        <div class="icon">🏠</div>
+                        家居
+                    </div>
+                    <div class="option-card">
+                        <div class="icon">👗</div>
+                        服装
+                    </div>
+                    <div class="option-card">
+                        <div class="icon">💄</div>
+                        美妆
+                    </div>
+                    <div class="option-card">
+                        <div class="icon">📱</div>
+                        数码
+                    </div>
+                    <div class="option-card">
+                        <div class="icon">👜</div>
+                        箱包
+                    </div>
+                    <div class="option-card">
+                        <div class="icon">👟</div>
+                        鞋履
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 模块二：视频复刻 -->
+        <section class="module-container video-module" id="module-video">
+            <div class="video-hero">
+                <h2>爆款视频智能复刻</h2>
+                <p>输入链接或上传视频，AI 提取脚本、理解画面、一键生成您的创意内容</p>
+            </div>
+
+            <div class="video-input-section">
+                <div class="video-upload-zone" id="videoUploadZone">
+                    <input type="file" id="videoInput" accept="video/mp4,video/mov" style="display: none;">
+                    <div class="upload-icon">📹</div>
+                    <h4>上传本地视频</h4>
+                    <p>支持 MP4、MOV 格式，最大 500MB</p>
+                    <div id="videoPreview" style="display: none; margin-top: 20px;">
+                        <video id="previewVideo" style="width: 100%; border-radius: 8px;" controls></video>
+                        <div style="margin-top: 10px; font-size: 12px; color: var(--text-secondary);">
+                            <span id="videoInfo"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="url-input-section">
+                    <h4>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+                            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+                        </svg>
+                        粘贴视频链接
+                    </h4>
+                    <div class="url-input-group">
+                        <input type="text" class="url-input" placeholder="抖音 / TikTok / YouTube Shorts 链接...">
+                        <button class="url-paste-btn" id="analyzeBtn">解析</button>
+                    </div>
+                    <div class="platform-icons">
+                        <span class="platform-icon">🎵 抖音</span>
+                        <span class="platform-icon">📌 TikTok</span>
+                        <span class="platform-icon">▶️ YouTube Shorts</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="analysis-results" id="analysisResults">
+                <div class="results-grid">
+                    <div class="analysis-card">
+                        <h4>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                <polyline points="14 2 14 8 20 8"/>
+                                <line x1="16" y1="13" x2="8" y2="13"/>
+                                <line x1="16" y1="17" x2="8" y2="17"/>
+                            </svg>
+                            提取的脚本
+                        </h4>
+                        <div class="script-display">
+                            <div class="script-line">
+                                <span class="timestamp">[00:00]</span>
+                                "家人们谁懂啊！这款神仙T恤也太好穿了吧！"
+                            </div>
+                            <div class="script-line">
+                                <span class="timestamp">[00:03]</span>
+                                "首先看这个面料，摸起来超级柔软舒适"
+                            </div>
+                            <div class="script-line">
+                                <span class="timestamp">[00:06]</span>
+                                "版型也是绝了，不管怎么搭都好看"
+                            </div>
+                            <div class="script-line">
+                                <span class="timestamp">[00:09]</span>
+                                "而且现在直播间专属价，买到就是赚到！"
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="analysis-card">
+                        <h4>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="3" width="18" height="18" rx="2"/>
+                                <circle cx="8.5" cy="8.5" r="1.5"/>
+                                <path d="M21 15l-5-5L5 21"/>
+                            </svg>
+                            画面关键帧
+                        </h4>
+                        <div class="video-preview-grid">
+                            <div class="preview-frame">
+                                <div style="width:100%;height:100%;background:linear-gradient(135deg,#4a3a6a,#8b5cf6);"></div>
+                                <span class="frame-overlay">00:00</span>
+                            </div>
+                            <div class="preview-frame">
+                                <div style="width:100%;height:100%;background:linear-gradient(135deg,#2a4a5a,#06b6d4);"></div>
+                                <span class="frame-overlay">00:03</span>
+                            </div>
+                            <div class="preview-frame">
+                                <div style="width:100%;height:100%;background:linear-gradient(135deg,#5a3a4a,#f472b6);"></div>
+                                <span class="frame-overlay">00:06</span>
+                            </div>
+                            <div class="preview-frame">
+                                <div style="width:100%;height:100%;background:linear-gradient(135deg,#3a5a3a,#10b981);"></div>
+                                <span class="frame-overlay">00:09</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="highlights-timeline">
+                    <div class="timeline-header">
+                        <h4>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                            </svg>
+                            高光节点分析
+                        </h4>
+                    </div>
+                    <div class="timeline-track">
+                        <div class="timeline-bar">
+                            <div class="timeline-progress"></div>
+                        </div>
+                        <div class="timeline-node"></div>
+                        <div class="timeline-node"></div>
+                        <div class="timeline-node"></div>
+                        <div class="timeline-node"></div>
+                    </div>
+                    <div class="highlights-list">
+                        <div class="highlight-item">
+                            <div class="time">00:02 - 00:05</div>
+                            <div class="desc">产品展示特写，面料质感突出</div>
+                        </div>
+                        <div class="highlight-item">
+                            <div class="time">00:08 - 00:12</div>
+                            <div class="desc">上身效果展示，场景转换</div>
+                        </div>
+                        <div class="highlight-item">
+                            <div class="time">00:15 - 00:18</div>
+                            <div class="desc">价格对比，促销信息</div>
+                        </div>
+                        <div class="highlight-item">
+                            <div class="time">00:20 - 00:25</div>
+                            <div class="desc">行动号召，引导购买</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="video-generate-controls">
+                    <div class="control-row">
+                        <div class="control-group">
+                            <label>风格迁移</label>
+                            <div class="style-tags">
+                                <span class="style-tag selected">原版风格</span>
+                                <span class="style-tag">高级感</span>
+                                <span class="style-tag">活力风</span>
+                                <span class="style-tag">极简风</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="control-row">
+                        <div class="control-group">
+                            <label>视频时长</label>
+                            <input type="range" class="duration-slider" min="5" max="60" value="30">
+                            <div class="duration-value">30 秒</div>
+                        </div>
+                    </div>
+                    <button class="generate-video-btn" id="generateVideoBtn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                            <polygon points="5 3 19 12 5 21 5 3"/>
+                        </svg>
+                        一键生成短视频
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 模块三：AI助手 -->
+        <section class="module-container agent-module" id="module-agent">
+            <div class="agent-hero">
+                <h2>多模态 AI 创意助手</h2>
+                <p>上传图片、输入描述，AI 理解您的需求，动态生成定制化创作方案</p>
+            </div>
+
+            <div class="agent-workspace">
+                <div class="chat-container">
+                    <div class="chat-header">
+                        <h4>
+                            <span class="status-dot"></span>
+                            AI 创意助手
+                        </h4>
+                        <div class="multimodal-badges">
+                            <span class="modal-badge active">📷 图</span>
+                            <span class="modal-badge active">📝 文</span>
+                            <span class="modal-badge">🎵 音</span>
+                        </div>
+                    </div>
+
+                    <div class="chat-messages" id="chatMessages">
+                        <div class="message ai">
+                            <div class="message-avatar">🤖</div>
+                            <div class="message-content">
+                                <div class="message-bubble">
+                                    您好！我是 EC 灼厂的 AI 创意助手。我能理解图片、文字等多种形式的内容，并根据您的产品信息自动调整生成方案。请上传商品图片或描述您的需求！
+                                </div>
+                                <div class="message-time">刚刚</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="chat-input-area">
+                        <div class="input-wrapper">
+                            <textarea class="chat-input" id="chatInput" placeholder="描述您的创作需求，或上传商品图片..." rows="1"></textarea>
+                            <div class="input-actions">
+                                <button class="input-btn" title="上传图片" id="uploadImageBtn">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <rect x="3" y="3" width="18" height="18" rx="2"/>
+                                        <circle cx="8.5" cy="8.5" r="1.5"/>
+                                        <path d="M21 15l-5-5L5 21"/>
+                                    </svg>
+                                </button>
+                                <button class="input-btn" title="语音输入" id="voiceInputBtn">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                                        <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                                        <line x1="12" y1="19" x2="12" y2="23"/>
+                                        <line x1="8" y1="23" x2="16" y2="23"/>
+                                    </svg>
+                                </button>
+                                <button class="input-btn send-btn" id="sendBtn">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <line x1="22" y1="2" x2="11" y2="13"/>
+                                        <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        <input type="file" id="imageInput" accept="image/*" style="display: none;">
+                    </div>
+                </div>
+
+                <div class="dynamic-form-panel">
+                    <div class="form-panel-header">
+                        <h4>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                <polyline points="14 2 14 8 20 8"/>
+                                <line x1="12" y1="18" x2="12" y2="12"/>
+                                <line x1="9" y1="15" x2="15" y2="15"/>
+                            </svg>
+                            动态表单
+                        </h4>
+                        <span class="form-badge">AI 生成</span>
+                    </div>
+
+                    <div class="dynamic-form-content" id="dynamicFormContent">
+                        <div class="form-intro">
+                            <div class="icon">📋</div>
+                            <p>AI 将根据您的对话内容<br>动态生成分表单字段</p>
+                        </div>
+
+                        <div class="dynamic-form" id="dynamicForm" style="display: none;">
+                            <div class="form-field">
+                                <label class="form-label">
+                                    商品名称 <span class="required">*</span>
+                                </label>
+                                <input type="text" class="form-input" placeholder="请输入商品名称" id="productName">
+                            </div>
+
+                            <div class="form-field">
+                                <label class="form-label">
+                                    目标受众 <span class="required">*</span>
+                                </label>
+                                <div class="form-options" id="audienceOptions">
+                                    <span class="form-option selected">18-25岁</span>
+                                    <span class="form-option">26-35岁</span>
+                                    <span class="form-option">36-45岁</span>
+                                    <span class="form-option">45岁以上</span>
+                                </div>
+                            </div>
+
+                            <div class="form-field">
+                                <label class="form-label">
+                                    营销风格
+                                </label>
+                                <select class="form-select" id="styleSelect">
+                                    <option value="">请选择营销风格</option>
+                                    <option value="luxury">轻奢高级</option>
+                                    <option value="youth">年轻活力</option>
+                                    <option value="minimal">简约极简</option>
+                                    <option value="playful">趣味可爱</option>
+                                </select>
+                            </div>
+
+                            <div class="form-field">
+                                <label class="form-label">
+                                    补充信息
+                                </label>
+                                <input type="text" class="form-input" placeholder="如：促销信息、特殊卖点等" id="extraInfo">
+                            </div>
+
+                            <button class="generate-btn" id="formGenerateBtn" style="margin-top: 16px;">
+                                <span class="btn-text">✨ 智能生成套图</span>
+                                <div class="progress-bar"></div>
+                            </button>
+                        </div>
+
+                        <div class="form-results" id="formResults">
+                            <div class="results-header">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                                    <polyline points="22 4 12 14.01 9 11.01"/>
+                                </svg>
+                                套图已生成！
+                            </div>
+                            <div class="generated-preview">
+                                <div class="preview-item">
+                                    <div class="overlay">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <rect x="3" y="3" width="18" height="18" rx="2"/>
+                                            <circle cx="8.5" cy="8.5" r="1.5"/>
+                                            <path d="M21 15l-5-5L5 21"/>
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div class="preview-item">
+                                    <div class="overlay">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <rect x="3" y="3" width="18" height="18" rx="2"/>
+                                            <circle cx="8.5" cy="8.5" r="1.5"/>
+                                            <path d="M21 15l-5-5L5 21"/>
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div class="preview-item">
+                                    <div class="overlay">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <rect x="3" y="3" width="18" height="18" rx="2"/>
+                                            <circle cx="8.5" cy="8.5" r="1.5"/>
+                                            <path d="M21 15l-5-5L5 21"/>
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="copy-btn">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="9" y="9" width="13" height="13" rx="2"/>
+                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                                </svg>
+                                复制营销文案
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // 状态管理
+        const state = {
+            currentModule: 'generate',
+            selectedModel: 'asian-female',
+            selectedScene: 'indoor',
+            selectedRatio: '16:9',
+            selectedLight: 'natural',
+            selectedColor: '#8b5cf6',
+            isGenerating: false,
+            isFormVisible: false,
+            formGenerated: false
+        };
+
+        // DOM 元素
+        const navTabs = document.querySelectorAll('.nav-tab');
+        const modules = document.querySelectorAll('.module-container');
+
+        // 模块切换
+        navTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const moduleName = tab.dataset.module;
+                
+                navTabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                
+                modules.forEach(m => m.classList.remove('active'));
+                document.getElementById(`module-${moduleName}`).classList.add('active');
+                
+                state.currentModule = moduleName;
+            });
+        });
+
+        // 选项卡选择逻辑
+        function initOptionSelection(container, selector, stateKey, stateValue) {
+            const elements = container.querySelectorAll(selector);
+            elements.forEach(el => {
+                el.addEventListener('click', () => {
+                    elements.forEach(e => e.classList.remove('selected'));
+                    el.classList.add('selected');
+                    if (stateKey) state[stateKey] = stateValue || el.dataset[stateKey.replace(/([A-Z])/g, (m) => m[0].toLowerCase() + m.slice(1))] || el.dataset.value || el.dataset.scene || el.dataset.light || el.dataset.color || el.dataset.ratio || el.dataset.model;
+                });
+            });
+        }
+
+        // 生图模块选项
+        document.querySelectorAll('.model-avatar').forEach(avatar => {
+            avatar.addEventListener('click', () => {
+                document.querySelectorAll('.model-avatar').forEach(a => a.classList.remove('selected'));
+                avatar.classList.add('selected');
+                state.selectedModel = avatar.dataset.model;
+                updatePrompt();
+            });
+        });
+
+        document.querySelectorAll('.scene-card').forEach(card => {
+            card.addEventListener('click', () => {
+                document.querySelectorAll('.scene-card').forEach(c => c.classList.remove('selected'));
+                card.classList.add('selected');
+                state.selectedScene = card.dataset.scene;
+                updatePrompt();
+            });
+        });
+
+        document.querySelectorAll('.ratio-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.ratio-btn').forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+                state.selectedRatio = btn.dataset.ratio;
+                updatePrompt();
+            });
+        });
+
+        document.querySelectorAll('.light-card').forEach(card => {
+            card.addEventListener('click', () => {
+                document.querySelectorAll('.light-card').forEach(c => c.classList.remove('selected'));
+                card.classList.add('selected');
+                state.selectedLight = card.dataset.light;
+                updatePrompt();
+            });
+        });
+
+        document.querySelectorAll('.color-swatch').forEach(swatch => {
+            swatch.addEventListener('click', () => {
+                document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
+                swatch.classList.add('selected');
+                state.selectedColor = swatch.dataset.color;
+                updatePrompt();
+            });
+        });
+
+        // 更新提示词
+        function updatePrompt() {
+            const modelNames = {
+                'asian-female': '亚洲女性模特',
+                'asian-male': '亚洲男性模特',
+                'western-female': '欧美女性模特',
+                'virtual': '虚拟模特'
+            };
+            const sceneNames = {
+                'indoor': '室内棚拍',
+                'street': '街拍外景',
+                'nature': '自然风光',
+                'creative': '创意场景'
+            };
+            const lightNames = {
+                'natural': '自然光',
+                'dramatic': '戏剧光',
+                'soft': '柔光',
+                'rembrandt': '伦勃朗光'
+            };
+            const colorNames = {
+                '#8b5cf6': '紫色主调',
+                '#06b6d4': '青色主调',
+                '#f472b6': '粉色主调',
+                '#10b981': '绿色主调',
+                '#f59e0b': '橙色主调',
+                '#ef4444': '红色主调'
+            };
+
+            document.getElementById('promptText').innerHTML = `
+                <span class="highlight">${modelNames[state.selectedModel]}</span>，
+                <span class="highlight">${sceneNames[state.selectedScene]}</span>场景，
+                <span class="highlight">${lightNames[state.selectedLight]}</span>照明，
+                <span class="highlight">${state.selectedRatio}</span>${state.selectedRatio === '1:1' ? '方版' : state.selectedRatio === '3:4' ? '竖版' : '横版'}构图，
+                <span class="highlight">${colorNames[state.selectedColor]}</span>，
+                专业电商摄影风格，高细节...
+            `;
+        }
+
+        // 生图按钮 - 真实功能实现
+        document.getElementById('generateBtn').addEventListener('click', async function() {
+            if (state.isGenerating) return;
+            
+            state.isGenerating = true;
+            this.classList.add('loading');
+            this.disabled = true;
+            
+            // 隐藏占位符，显示生成区域
+            document.getElementById('previewPlaceholder').style.display = 'none';
+            document.getElementById('generatedResult').classList.add('show');
+            
+            // 获取预览区域尺寸
+            const resultImage = document.querySelector('.result-image');
+            const width = resultImage.offsetWidth;
+            const height = resultImage.offsetHeight;
+            
+            // 创建Canvas
+            let canvas = document.getElementById('generatedCanvas');
+            if (!canvas) {
+                canvas = document.createElement('canvas');
+                canvas.id = 'generatedCanvas';
+                canvas.style.width = '100%';
+                canvas.style.height = '100%';
+                canvas.style.borderRadius = '12px';
+                resultImage.insertBefore(canvas, resultImage.firstChild);
+            }
+            canvas.width = width;
+            canvas.height = height;
+            
+            const ctx = canvas.getContext('2d');
+            
+            // 多阶段进度展示
+            const stages = [
+                { name: '准备提示词', progress: 20, duration: 800 },
+                { name: '调用AI模型', progress: 50, duration: 1200 },
+                { name: '渲染图片', progress: 80, duration: 1500 },
+                { name: '后处理优化', progress: 100, duration: 500 }
+            ];
+            
+            // 创建进度overlay
+            let progressOverlay = document.getElementById('progressOverlay');
+            if (!progressOverlay) {
+                progressOverlay = document.createElement('div');
+                progressOverlay.id = 'progressOverlay';
+                progressOverlay.style.cssText = `
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    background: rgba(0,0,0,0.85);
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    z-index: 10;
+                    border-radius: 12px;
+                `;
+                resultImage.appendChild(progressOverlay);
+            }
+            progressOverlay.style.display = 'flex';
+            
+            for (let stage of stages) {
+                progressOverlay.innerHTML = `
+                    <div style="text-align: center; color: white;">
+                        <div style="font-size: 14px; margin-bottom: 16px; color: #a78bfa;">${stage.name}...</div>
+                        <div style="width: 200px; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden;">
+                            <div style="width: 0%; height: 100%; background: linear-gradient(90deg, #8b5cf6, #06b6d4); border-radius: 2px; transition: width ${stage.duration}ms ease;"></div>
+                        </div>
+                        <div style="font-size: 12px; margin-top: 8px; color: #64748b;">${stage.progress}%</div>
+                    </div>
+                `;
+                
+                // 动画进度条
+                await new Promise(resolve => {
+                    setTimeout(() => {
+                        progressOverlay.querySelector('div > div > div').style.width = stage.progress + '%';
+                        resolve();
+                    }, 50);
+                });
+                
+                await new Promise(resolve => setTimeout(resolve, stage.duration));
+            }
+            
+            // 生成图片
+            generateImage(ctx, width, height);
+            
+            // 隐藏进度overlay
+            progressOverlay.style.display = 'none';
+            
+            // 显示变体区域
+            document.getElementById('variantsSection').style.display = 'block';
+            
+            // 生成变体
+            generateVariants();
+            
+            state.isGenerating = false;
+            this.classList.remove('loading');
+            this.disabled = false;
+            
+            // 显示成功提示
+            showToast('图片生成成功！', 'success');
+        });
+        
+        // Canvas图片生成函数
+        function generateImage(ctx, width, height) {
+            // 根据参数生成不同的视觉效果
+            const colorMap = {
+                '#8b5cf6': ['#8b5cf6', '#a78bfa', '#7c3aed'],
+                '#06b6d4': ['#06b6d4', '#22d3ee', '#0891b2'],
+                '#f472b6': ['#f472b6', '#f9a8d4', '#ec4899'],
+                '#10b981': ['#10b981', '#34d399', '#059669'],
+                '#f59e0b': ['#f59e0b', '#fbbf24', '#d97706'],
+                '#ef4444': ['#ef4444', '#f87171', '#dc2626']
+            };
+            
+            const sceneGradients = {
+                'indoor': ['#1a1a2e', '#2d2d4a'],
+                'street': ['#2d4a1a', '#4a7a2d'],
+                'nature': ['#1a3a4a', '#2d5a6a'],
+                'creative': ['#4a1a4a', '#7a2d7a']
+            };
+            
+            const colors = colorMap[state.selectedColor] || colorMap['#8b5cf6'];
+            const sceneGrad = sceneGradients[state.selectedScene] || sceneGradients['indoor'];
+            
+            // 绘制背景渐变
+            const gradient = ctx.createLinearGradient(0, 0, width, height);
+            gradient.addColorStop(0, sceneGrad[0]);
+            gradient.addColorStop(0.5, colors[0]);
+            gradient.addColorStop(1, sceneGrad[1]);
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, width, height);
+            
+            // 添加光影效果
+            if (state.selectedLight === 'dramatic') {
+                const lightGrad = ctx.createRadialGradient(width/2, height/2, 0, width/2, height/2, width/2);
+                lightGrad.addColorStop(0, 'rgba(255,255,255,0.3)');
+                lightGrad.addColorStop(1, 'rgba(0,0,0,0.7)');
+                ctx.fillStyle = lightGrad;
+                ctx.fillRect(0, 0, width, height);
+            } else if (state.selectedLight === 'soft') {
+                const softGrad = ctx.createRadialGradient(width/2, 0, 0, width/2, 0, height);
+                softGrad.addColorStop(0, 'rgba(255,255,255,0.2)');
+                softGrad.addColorStop(1, 'rgba(255,255,255,0)');
+                ctx.fillStyle = softGrad;
+                ctx.fillRect(0, 0, width, height);
+            } else if (state.selectedLight === 'rembrandt') {
+                const remGrad = ctx.createLinearGradient(0, 0, width, 0);
+                remGrad.addColorStop(0, 'rgba(0,0,0,0.5)');
+                remGrad.addColorStop(0.5, 'rgba(255,255,255,0.1)');
+                remGrad.addColorStop(1, 'rgba(0,0,0,0.3)');
+                ctx.fillStyle = remGrad;
+                ctx.fillRect(0, 0, width, height);
+            }
+            
+            // 绘制装饰元素
+            ctx.strokeStyle = colors[1];
+            ctx.lineWidth = 2;
+            for (let i = 0; i < 5; i++) {
+                ctx.beginPath();
+                ctx.arc(
+                    Math.random() * width,
+                    Math.random() * height,
+                    50 + Math.random() * 100,
+                    0,
+                    Math.PI * 2
+                );
+                ctx.stroke();
+            }
+            
+            // 绘制模特占位符
+            const modelSizes = {
+                'asian-female': { w: 120, h: 180 },
+                'asian-male': { w: 130, h: 190 },
+                'western-female': { w: 125, h: 185 },
+                'virtual': { w: 140, h: 200 }
+            };
+            const size = modelSizes[state.selectedModel] || modelSizes['asian-female'];
+            
+            ctx.fillStyle = 'rgba(255,255,255,0.9)';
+            ctx.fillRect(width/2 - size.w/2, height/2 - size.h/2, size.w, size.h);
+            
+            ctx.fillStyle = colors[0];
+            ctx.font = '14px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('AI Generated', width/2, height/2);
+            ctx.font = '12px sans-serif';
+            ctx.fillStyle = colors[1];
+            ctx.fillText(`${state.selectedModel} | ${state.selectedScene}`, width/2, height/2 + 20);
+            
+            // 添加水印
+            ctx.fillStyle = 'rgba(255,255,255,0.3)';
+            ctx.font = '10px monospace';
+            ctx.textAlign = 'right';
+            ctx.fillText('EC灼厂 AI', width - 10, height - 10);
+        }
+        
+        // 生成变体
+        function generateVariants() {
+            const variants = document.querySelectorAll('.variant-card');
+            const variantParams = [
+                { model: 'asian-male', scene: 'street' },
+                { model: 'western-female', scene: 'nature' },
+                { model: 'virtual', scene: 'creative' },
+                { model: 'asian-female', scene: 'indoor' }
+            ];
+            
+            variants.forEach((variant, index) => {
+                const canvas = document.createElement('canvas');
+                canvas.width = 200;
+                canvas.height = 200;
+                const ctx = canvas.getContext('2d');
+                
+                // 保存原始状态
+                const originalModel = state.selectedModel;
+                const originalScene = state.selectedScene;
+                
+                // 临时修改状态
+                state.selectedModel = variantParams[index].model;
+                state.selectedScene = variantParams[index].scene;
+                
+                // 生成变体图片
+                generateImage(ctx, 200, 200);
+                
+                // 恢复状态
+                state.selectedModel = originalModel;
+                state.selectedScene = originalScene;
+                
+                // 替换背景
+                const bgDiv = variant.querySelector('.variant-bg');
+                bgDiv.style.background = `url(${canvas.toDataURL()}) center/cover`;
+                bgDiv.style.opacity = '1';
+                
+                // 添加点击生成功能
+                variant.onclick = () => {
+                    const mainCanvas = document.getElementById('generatedCanvas');
+                    const mainCtx = mainCanvas.getContext('2d');
+                    state.selectedModel = variantParams[index].model;
+                    state.selectedScene = variantParams[index].scene;
+                    generateImage(mainCtx, mainCanvas.width, mainCanvas.height);
+                    showToast(`已切换到变体 ${String.fromCharCode(65 + index)}`, 'info');
+                };
+            });
+        }
+        
+        // 下载功能
+        document.addEventListener('DOMContentLoaded', () => {
+            const downloadBtn = document.querySelector('.preview-btn');
+            if (downloadBtn && downloadBtn.textContent.includes('下载')) {
+                downloadBtn.addEventListener('click', () => {
+                    const canvas = document.getElementById('generatedCanvas');
+                    if (!canvas) {
+                        showToast('请先生成图片', 'warning');
+                        return;
+                    }
+                    
+                    const link = document.createElement('a');
+                    link.download = `EC灼厂_${Date.now()}.png`;
+                    link.href = canvas.toDataURL();
+                    link.click();
+                    showToast('图片已下载', 'success');
+                });
+            }
+        });
+
+        // 视频上传功能
+        const videoUploadZone = document.getElementById('videoUploadZone');
+        const videoInput = document.getElementById('videoInput');
+        const previewVideo = document.getElementById('previewVideo');
+        const videoPreview = document.getElementById('videoPreview');
+        const videoInfo = document.getElementById('videoInfo');
+
+        videoUploadZone.addEventListener('click', () => {
+            videoInput.click();
+        });
+
+        videoUploadZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            videoUploadZone.style.borderColor = 'var(--primary)';
+            videoUploadZone.style.background = 'rgba(139,92,246,0.1)';
+        });
+
+        videoUploadZone.addEventListener('dragleave', () => {
+            videoUploadZone.style.borderColor = '';
+            videoUploadZone.style.background = '';
+        });
+
+        videoUploadZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            videoUploadZone.style.borderColor = '';
+            videoUploadZone.style.background = '';
+            
+            const file = e.dataTransfer.files[0];
+            if (file && file.type.startsWith('video/')) {
+                handleVideoUpload(file);
+            } else {
+                showToast('请上传有效的视频文件', 'error');
+            }
+        });
+
+        videoInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                handleVideoUpload(file);
+            }
+        });
+
+        function handleVideoUpload(file) {
+            if (file.size > 500 * 1024 * 1024) {
+                showToast('视频文件不能超过500MB', 'warning');
+                return;
+            }
+
+            const url = URL.createObjectURL(file);
+            previewVideo.src = url;
+            videoPreview.style.display = 'block';
+            
+            previewVideo.onloadedmetadata = () => {
+                const duration = Math.round(previewVideo.duration);
+                const size = (file.size / (1024 * 1024)).toFixed(2);
+                videoInfo.textContent = `时长: ${duration}秒 | 大小: ${size}MB | 格式: ${file.type}`;
+            };
+
+            showToast('视频上传成功！点击"解析"开始分析', 'success');
+        }
+
+        // 链接解析和视频分析功能
+        document.getElementById('analyzeBtn').addEventListener('click', async function() {
+            const urlInput = document.querySelector('.url-input');
+            const videoUrl = urlInput.value.trim();
+            
+            if (!videoUrl && !previewVideo.src) {
+                showToast('请上传视频或输入视频链接', 'warning');
+                return;
+            }
+
+            this.disabled = true;
+            this.innerHTML = '<span class="spinner" style="animation: spin 1s linear infinite; display: inline-block;">⟳</span> 解析中...';
+
+            // 模拟多阶段分析过程
+            const analysisStages = [
+                { name: '元数据提取', progress: 20, duration: 800 },
+                { name: '场景分析', progress: 40, duration: 1000 },
+                { name: '人物识别', progress: 60, duration: 1200 },
+                { name: '脚本提取', progress: 80, duration: 1000 },
+                { name: '高光检测', progress: 100, duration: 800 }
+            ];
+
+            const analysisResults = document.getElementById('analysisResults');
+            analysisResults.innerHTML = `
+                <div style="text-align: center; padding: 40px;">
+                    <div style="margin-bottom: 20px;">
+                        <div style="width: 300px; height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; margin: 0 auto; overflow: hidden;">
+                            <div id="analysisProgress" style="width: 0%; height: 100%; background: linear-gradient(90deg, #8b5cf6, #06b6d4); border-radius: 3px; transition: width 0.3s ease;"></div>
+                        </div>
+                        <div id="analysisStage" style="font-size: 14px; color: #a78bfa; margin-top: 12px;">准备中...</div>
+                        <div id="analysisPercent" style="font-size: 12px; color: #64748b; margin-top: 4px;">0%</div>
+                    </div>
+                </div>
+            `;
+            analysisResults.classList.add('show');
+
+            for (let stage of analysisStages) {
+                document.getElementById('analysisStage').textContent = stage.name + '...';
+                document.getElementById('analysisPercent').textContent = stage.progress + '%';
+                
+                await new Promise(resolve => {
+                    setTimeout(() => {
+                        document.getElementById('analysisProgress').style.width = stage.progress + '%';
+                        resolve();
+                    }, 50);
+                });
+                
+                await new Promise(resolve => setTimeout(resolve, stage.duration));
+            }
+
+            // 显示分析结果
+            displayAnalysisResults(videoUrl);
+            
+            this.disabled = false;
+            this.innerHTML = '重新解析';
+            showToast('视频分析完成！', 'success');
+        });
+
+        function displayAnalysisResults(videoUrl) {
+            const results = document.getElementById('analysisResults');
+            
+            // 模拟提取的脚本
+            const scripts = [
+                { time: '00:00', text: '家人们谁懂啊！这款神仙T恤也太好穿了吧！' },
+                { time: '00:03', text: '首先看这个面料，摸起来超级柔软舒适' },
+                { time: '00:06', text: '版型也是绝了，不管怎么搭都好看' },
+                { time: '00:09', text: '而且现在直播间专属价，买到就是赚到！' }
+            ];
+            
+            // 模拟关键帧
+            const frames = [
+                { time: '00:00', gradient: 'linear-gradient(135deg, #4a3a6a, #8b5cf6)' },
+                { time: '00:03', gradient: 'linear-gradient(135deg, #2a4a5a, #06b6d4)' },
+                { time: '00:06', gradient: 'linear-gradient(135deg, #5a3a4a, #f472b6)' },
+                { time: '00:09', gradient: 'linear-gradient(135deg, #3a5a3a, #10b981)' }
+            ];
+            
+            // 模拟高光节点
+            const highlights = [
+                { time: '00:02 - 00:05', desc: '产品展示特写，面料质感突出' },
+                { time: '00:08 - 00:12', desc: '上身效果展示，场景转换' },
+                { time: '00:15 - 00:18', desc: '价格对比，促销信息' }
+            ];
+            
+            results.innerHTML = `
+                <div class="results-grid">
+                    <div class="analysis-card">
+                        <h4>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                <polyline points="14 2 14 8 20 8"/>
+                                <line x1="16" y1="13" x2="8" y2="13"/>
+                                <line x1="16" y1="17" x2="8" y2="17"/>
+                            </svg>
+                            提取的脚本
+                        </h4>
+                        <div class="script-display">
+                            ${scripts.map(s => `
+                                <div class="script-line">
+                                    <span class="timestamp">[${s.time}]</span>
+                                    ${s.text}
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+
+                    <div class="analysis-card">
+                        <h4>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="3" width="18" height="18" rx="2"/>
+                                <circle cx="8.5" cy="8.5" r="1.5"/>
+                                <path d="M21 15l-5-5L5 21"/>
+                            </svg>
+                            画面关键帧
+                        </h4>
+                        <div class="video-preview-grid">
+                            ${frames.map(f => `
+                                <div class="preview-frame">
+                                    <canvas class="frame-canvas" data-gradient="${f.gradient}" style="width:100%;height:100%;"></canvas>
+                                    <span class="frame-overlay">${f.time}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="highlights-timeline">
+                    <div class="timeline-header">
+                        <h4>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                            </svg>
+                            高光节点分析
+                        </h4>
+                    </div>
+                    <div class="timeline-track">
+                        <div class="timeline-bar">
+                            <div class="timeline-progress" style="width: 75%;"></div>
+                        </div>
+                        ${highlights.map((h, i) => `
+                            <div class="timeline-node" style="left: ${(i+1)*25}%;">
+                                <div class="node-dot"></div>
+                                <div class="node-label">${h.time}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div class="highlights-list">
+                        ${highlights.map(h => `
+                            <div class="highlight-item">
+                                <div class="time">${h.time}</div>
+                                <div class="desc">${h.desc}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin-top: 32px;">
+                    <button class="generate-btn" id="generateVideoBtn" style="max-width: 400px;">
+                        <span class="btn-text">🎬 一键生成短视频</span>
+                        <div class="progress-bar"></div>
+                    </button>
+                </div>
+            `;
+
+            // 绘制关键帧canvas
+            results.querySelectorAll('.frame-canvas').forEach(canvas => {
+                canvas.width = 200;
+                canvas.height = 150;
+                const ctx = canvas.getContext('2d');
+                const gradient = canvas.dataset.gradient;
+                
+                // 解析渐变
+                const grad = ctx.createLinearGradient(0, 0, 200, 150);
+                grad.addColorStop(0, '#4a3a6a');
+                grad.addColorStop(1, '#8b5cf6');
+                ctx.fillStyle = grad;
+                ctx.fillRect(0, 0, 200, 150);
+                
+                // 添加装饰
+                ctx.fillStyle = 'rgba(255,255,255,0.2)';
+                ctx.fillRect(50, 50, 100, 50);
+                ctx.fillStyle = 'white';
+                ctx.font = '12px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText('Key Frame', 100, 80);
+            });
+
+            // 添加生成视频按钮事件
+            document.getElementById('generateVideoBtn').addEventListener('click', async function() {
+                this.classList.add('loading');
+                this.disabled = true;
+                
+                await new Promise(resolve => setTimeout(resolve, 3000));
+                
+                this.innerHTML = `
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                        <polyline points="22 4 12 14.01 9 11.01"/>
+                    </svg>
+                    视频生成完成！
+                `;
+                this.style.background = 'var(--success)';
+                showToast('短视频生成成功！', 'success');
+            });
+        }
+
+        // 风格标签
+        document.querySelectorAll('.style-tag').forEach(tag => {
+            tag.addEventListener('click', () => {
+                tag.parentElement.querySelectorAll('.style-tag').forEach(t => t.classList.remove('selected'));
+                tag.classList.add('selected');
+            });
+        });
+
+        // 时长滑块
+        document.querySelector('.duration-slider').addEventListener('input', function() {
+            document.querySelector('.duration-value').textContent = this.value + ' 秒';
+        });
+
+        // 生成视频按钮
+        document.getElementById('generateVideoBtn').addEventListener('click', function() {
+            this.innerHTML = `
+                <svg class="spinner" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20" style="animation: spin 1s linear infinite;">
+                    <path d="M12 2v4m0 12v4m10-10h-4M6 12H2"/>
+                </svg>
+                正在生成中...
+            `;
+            
+            setTimeout(() => {
+                this.innerHTML = `
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                        <polyline points="22 4 12 14.01 9 11.01"/>
+                    </svg>
+                    视频生成完成！
+                `;
+                this.style.background = 'var(--success)';
+            }, 3000);
+        });
+
+        // AI 助手对话
+        const chatInput = document.getElementById('chatInput');
+        const sendBtn = document.getElementById('sendBtn');
+        const chatMessages = document.getElementById('chatMessages');
+        const imageInput = document.getElementById('imageInput');
+        const uploadImageBtn = document.getElementById('uploadImageBtn');
+        const voiceInputBtn = document.getElementById('voiceInputBtn');
+
+        // 上下文记忆
+        let conversationHistory = [];
+        const MAX_HISTORY = 5;
+
+        // 图片上传功能
+        uploadImageBtn.addEventListener('click', () => {
+            imageInput.click();
+        });
+
+        imageInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            if (!file.type.startsWith('image/')) {
+                showToast('请上传图片文件', 'error');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const imageUrl = event.target.result;
+                
+                // 添加图片消息到聊天
+                addMessageToChat('user', `<img src="${imageUrl}" style="max-width: 200px; border-radius: 8px; margin-top: 8px;">`, '图片');
+                
+                // 模拟AI分析图片
+                setTimeout(() => {
+                    addMessageToChat('ai', '已收到您的商品图片！我正在分析图片内容，识别商品类型、风格特征...', '正在分析...');
+                    
+                    setTimeout(() => {
+                        addMessageToChat('ai', '分析完成！这是一款时尚休闲T恤，适合年轻女性，风格偏向简约百搭。我已为您生成了定制化的创作表单。', null, true);
+                        
+                        // 显示动态表单
+                        document.querySelector('.form-intro').style.display = 'none';
+                        document.getElementById('dynamicForm').style.display = 'flex';
+                        state.isFormVisible = true;
+                    }, 2000);
+                }, 1000);
+            };
+            reader.readAsDataURL(file);
+        });
+
+        // 语音输入功能
+        let isRecording = false;
+        voiceInputBtn.addEventListener('click', () => {
+            isRecording = !isRecording;
+            
+            if (isRecording) {
+                voiceInputBtn.style.color = 'var(--error)';
+                voiceInputBtn.style.animation = 'pulse 1s ease infinite';
+                showToast('正在录音...', 'info');
+                
+                // 模拟语音识别
+                setTimeout(() => {
+                    isRecording = false;
+                    voiceInputBtn.style.color = '';
+                    voiceInputBtn.style.animation = '';
+                    chatInput.value = '我需要为夏季新款连衣裙生成一组电商主图和详情页';
+                    showToast('语音识别完成', 'success');
+                }, 3000);
+            } else {
+                voiceInputBtn.style.color = '';
+                voiceInputBtn.style.animation = '';
+                showToast('已取消录音', 'warning');
+            }
+        });
+
+        // 添加消息到聊天
+        function addMessageToChat(sender, content, thinking = null, showForm = false) {
+            const avatar = sender === 'user' ? '👤' : '🤖';
+            const time = '刚刚';
+            
+            let thinkingHtml = '';
+            if (thinking) {
+                thinkingHtml = `
+                    <div class="thinking-process">
+                        <div class="thinking-header">
+                            <div class="thinking-dots">
+                                <span></span><span></span><span></span>
+                            </div>
+                            ${thinking}
+                        </div>
+                    </div>
+                `;
+            }
+
+            const messageHtml = `
+                <div class="message ${sender}">
+                    <div class="message-avatar">${avatar}</div>
+                    <div class="message-content">
+                        <div class="message-bubble">${content}</div>
+                        ${thinkingHtml}
+                        <div class="message-time">${time}</div>
+                    </div>
+                </div>
+            `;
+
+            chatMessages.insertAdjacentHTML('beforeend', messageHtml);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            // 更新上下文记忆
+            if (sender === 'user') {
+                conversationHistory.push({ role: 'user', content: typeof content === 'string' ? content : '图片消息' });
+            } else {
+                conversationHistory.push({ role: 'ai', content: content });
+            }
+            
+            // 保持最近5轮对话
+            if (conversationHistory.length > MAX_HISTORY * 2) {
+                conversationHistory = conversationHistory.slice(-MAX_HISTORY * 2);
+            }
+
+            // 更新记忆标签显示
+            updateMemoryTags();
+        }
+
+        // 更新记忆标签
+        function updateMemoryTags() {
+            const memoryTags = document.querySelector('.memory-tags');
+            if (!memoryTags) return;
+
+            const tags = conversationHistory
+                .filter(msg => msg.role === 'user')
+                .map(msg => {
+                    // 提取关键词作为标签
+                    const keywords = extractKeywords(msg.content);
+                    return keywords;
+                })
+                .flat()
+                .slice(-5);
+
+            if (tags.length > 0) {
+                memoryTags.innerHTML = tags.map(tag => `<span class="memory-tag">${tag}</span>`).join('');
+            }
+        }
+
+        // 提取关键词（简单实现）
+        function extractKeywords(text) {
+            const keywordMap = {
+                'T恤': ['T恤', '上衣', '衣服'],
+                '连衣裙': ['连衣裙', '裙子', '裙装'],
+                '年轻女性': ['年轻', '女性', '女生'],
+                '夏季': ['夏季', '夏天', '夏日'],
+                '新款': ['新款', '新品', '最新'],
+                '时尚': ['时尚', '潮流', '流行'],
+                '简约': ['简约', '简单', '简洁']
+            };
+
+            let keywords = [];
+            for (let [keyword, patterns] of Object.entries(keywordMap)) {
+                if (patterns.some(p => text.includes(p))) {
+                    keywords.push(keyword);
+                }
+            }
+
+            return keywords.length > 0 ? keywords : ['电商创作'];
+        }
+
+        // 智能回复逻辑
+        function generateIntelligentReply(userMessage) {
+            const message = userMessage.toLowerCase();
+            
+            // 关键词匹配
+            if (message.includes('t恤') || message.includes('上衣')) {
+                return {
+                    reply: '明白了！您需要为T恤生成电商素材。请告诉我更多细节：目标受众是谁？希望什么风格的营销文案？',
+                    formType: 'clothing'
+                };
+            } else if (message.includes('连衣裙') || message.includes('裙子')) {
+                return {
+                    reply: '好的！连衣裙是夏季热销品类。我将为您生成一组精美的电商套图，包括主图、详情页和营销文案。',
+                    formType: 'dress'
+                };
+            } else if (message.includes('美妆') || message.includes('化妆品')) {
+                return {
+                    reply: '美妆类商品需要突出产品细节和使用效果。我已为您准备了美妆专用的创作表单。',
+                    formType: 'beauty'
+                };
+            } else if (message.includes('数码') || message.includes('电子')) {
+                return {
+                    reply: '数码产品需要专业的产品展示。我将生成科技感十足的电商素材。',
+                    formType: 'digital'
+                };
+            } else {
+                return {
+                    reply: '明白了！根据您的描述，我已为您生成了定制化的创作表单，包含目标受众、营销风格等选项，请填写后我将为您生成完整的电商套图和营销文案。',
+                    formType: 'general'
+                };
+            }
+        }
+
+        function sendMessage() {
+            const text = chatInput.value.trim();
+            if (!text) return;
+
+            // 添加用户消息
+            addMessageToChat('user', text);
+
+            chatInput.value = '';
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            // 生成智能回复
+            const { reply, formType } = generateIntelligentReply(text);
+
+            // 显示 AI 思考过程
+            setTimeout(() => {
+                addMessageToChat('ai', '正在分析您的需求...', '多模态理解中');
+
+                // 显示思考过程
+                const thinkingItems = [
+                    '提取关键词',
+                    '分析目标受众',
+                    '匹配营销策略'
+                ];
+
+                setTimeout(() => {
+                    // 更新最后一条消息，添加思考过程
+                    const lastMessage = chatMessages.querySelector('.message.ai:last-child');
+                    if (lastMessage) {
+                        const thinkingProcess = lastMessage.querySelector('.thinking-process');
+                        if (thinkingProcess) {
+                            thinkingProcess.innerHTML = `
+                                <div class="thinking-header">
+                                    <div class="thinking-dots">
+                                        <span></span><span></span><span></span>
+                                    </div>
+                                    分析完成
+                                </div>
+                                <div class="thinking-items">
+                                    ${thinkingItems.map(item => `
+                                        <span class="thinking-item">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <polyline points="20 6 9 17 4 12"/>
+                                            </svg>
+                                            ${item}
+                                        </span>
+                                    `).join('')}
+                                </div>
+                                <div class="context-memory">
+                                    <div class="label">上下文记忆</div>
+                                    <div class="memory-tags">
+                                        ${conversationHistory.slice(-3).map(msg => `
+                                            <span class="memory-tag">${msg.content.substring(0, 10)}...</span>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                            `;
+                        }
+                    }
+
+                    // 显示 AI 回复
+                    setTimeout(() => {
+                        addMessageToChat('ai', reply);
+
+                        // 显示动态表单
+                        if (!state.isFormVisible) {
+                            document.querySelector('.form-intro').style.display = 'none';
+                            document.getElementById('dynamicForm').style.display = 'flex';
+                            state.isFormVisible = true;
+                        }
+                    }, 1000);
+                }, 1500);
+            }, 500);
+        }
+
+        sendBtn.addEventListener('click', sendMessage);
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        // 动态表单选项
+        document.querySelectorAll('.form-option').forEach(option => {
+            option.addEventListener('click', () => {
+                option.classList.toggle('selected');
+            });
+        });
+
+        // 表单生成按钮 - 真实功能实现
+        document.getElementById('formGenerateBtn').addEventListener('click', async function() {
+            if (state.formGenerated) return;
+            
+            this.classList.add('loading');
+            this.disabled = true;
+            
+            // 获取表单数据
+            const productName = document.getElementById('productName')?.value || '未命名商品';
+            const targetAudience = Array.from(document.querySelectorAll('.form-option.selected'))
+                .map(el => el.textContent.trim())
+                .join(', ');
+            const marketingStyle = document.getElementById('marketingStyle')?.value || 'auto';
+            
+            // 模拟生成过程
+            const stages = [
+                { name: '分析商品特征', progress: 25, duration: 800 },
+                { name: '生成营销文案', progress: 50, duration: 1000 },
+                { name: '创作套图方案', progress: 75, duration: 1200 },
+                { name: '优化输出质量', progress: 100, duration: 500 }
+            ];
+            
+            const formResults = document.getElementById('formResults');
+            formResults.innerHTML = `
+                <div style="text-align: center; padding: 40px;">
+                    <div style="margin-bottom: 20px;">
+                        <div style="width: 300px; height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; margin: 0 auto; overflow: hidden;">
+                            <div id="formProgress" style="width: 0%; height: 100%; background: linear-gradient(90deg, #8b5cf6, #06b6d4); border-radius: 3px; transition: width 0.3s ease;"></div>
+                        </div>
+                        <div id="formStage" style="font-size: 14px; color: #a78bfa; margin-top: 12px;">准备中...</div>
+                        <div id="formPercent" style="font-size: 12px; color: #64748b; margin-top: 4px;">0%</div>
+                    </div>
+                </div>
+            `;
+            formResults.classList.add('show');
+            
+            for (let stage of stages) {
+                document.getElementById('formStage').textContent = stage.name + '...';
+                document.getElementById('formPercent').textContent = stage.progress + '%';
+                
+                await new Promise(resolve => {
+                    setTimeout(() => {
+                        document.getElementById('formProgress').style.width = stage.progress + '%';
+                        resolve();
+                    }, 50);
+                });
+                
+                await new Promise(resolve => setTimeout(resolve, stage.duration));
+            }
+            
+            // 生成结果
+            displayFormResults(productName, targetAudience, marketingStyle);
+            
+            state.formGenerated = true;
+            this.classList.remove('loading');
+            this.disabled = false;
+            showToast('套图生成成功！', 'success');
+        });
+
+        function displayFormResults(productName, targetAudience, marketingStyle) {
+            const formResults = document.getElementById('formResults');
+            
+            // 生成营销文案
+            const copywriting = generateCopywriting(productName, targetAudience, marketingStyle);
+            
+            // 生成套图
+            const images = generateProductImages(productName);
+            
+            formResults.innerHTML = `
+                <div class="results-header">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                        <polyline points="22 4 12 14.01 9 11.01"/>
+                    </svg>
+                    套图已生成！
+                </div>
+                <div class="generated-preview">
+                    <div class="preview-item">
+                        <div class="overlay">
+                            <div class="copywriting-content">
+                                <h4>营销文案</h4>
+                                <div class="copywriting-text" id="copywritingText">${copywriting}</div>
+                                <button class="copy-btn" onclick="copyCopywriting()">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <rect x="9" y="9" width="13" height="13" rx="2"/>
+                                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                                    </svg>
+                                    复制文案
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    ${images.map((img, i) => `
+                        <div class="preview-item">
+                            <canvas id="productImg${i}" style="width:100%;height:100%;border-radius:8px;"></canvas>
+                            <div class="item-label">${img.label}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            
+            // 绘制产品图片
+            images.forEach((img, i) => {
+                const canvas = document.getElementById(`productImg${i}`);
+                canvas.width = 300;
+                canvas.height = 200;
+                const ctx = canvas.getContext('2d');
+                
+                // 绘制渐变背景
+                const grad = ctx.createLinearGradient(0, 0, 300, 200);
+                grad.addColorStop(0, img.color1);
+                grad.addColorStop(1, img.color2);
+                ctx.fillStyle = grad;
+                ctx.fillRect(0, 0, 300, 200);
+                
+                // 添加装饰
+                ctx.fillStyle = 'rgba(255,255,255,0.2)';
+                ctx.fillRect(50, 50, 200, 100);
+                
+                ctx.fillStyle = 'white';
+                ctx.font = '16px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(productName, 150, 90);
+                ctx.font = '12px sans-serif';
+                ctx.fillText(img.label, 150, 120);
+            });
+        }
+
+        function generateCopywriting(productName, targetAudience, style) {
+            const styleMap = {
+                'emotional': '感性',
+                'rational': '理性',
+                'humor': '幽默',
+                'auto': '智能'
+            };
+            
+            const templates = {
+                'emotional': [
+                    `✨ ${productName}，让每一天都充满光彩`,
+                    `💫 温柔以待，美好如初`,
+                    `🌸 遇见更美的自己，从${productName}开始`
+                ],
+                'rational': [
+                    `【${productName}】性价比之选，品质保证`,
+                    `🔍 细节决定品质，${productName}值得信赖`,
+                    `📊 用户好评率98%，${productName}是您的不二之选`
+                ],
+                'humor': [
+                    `😂 穿上${productName}，颜值直接翻倍！`,
+                    `🎉 这不是广告，这是安利！${productName}太好用了`,
+                    `💃 穿${productName}出门，回头率爆表！`
+                ],
+                'auto': [
+                    `🌟 ${productName} | 品质生活新选择`,
+                    `✨ 专为${targetAudience}打造，展现独特魅力`,
+                    `💎 精选品质，${productName}让每一天都精彩`
+                ]
+            };
+            
+            const styleKey = styleMap[style] ? style : 'auto';
+            const lines = templates[styleKey];
+            return lines.join('\n\n');
+        }
+
+        function generateProductImages(productName) {
+            return [
+                { label: '主图', color1: '#8b5cf6', color2: '#ec4899' },
+                { label: '详情页1', color1: '#06b6d4', color2: '#3b82f6' },
+                { label: '详情页2', color1: '#f472b6', color2: '#f59e0b' },
+                { label: '营销图', color1: '#10b981', color2: '#06b6d4' }
+            ];
+        }
+
+        function copyCopywriting() {
+            const text = document.getElementById('copywritingText').textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                showToast('文案已复制到剪贴板', 'success');
+            }).catch(() => {
+                showToast('复制失败，请手动复制', 'error');
+            });
+        }
+
+        // 模板卡片点击效果
+        document.querySelectorAll('.template-card, .variant-card').forEach(card => {
+            card.addEventListener('click', function() {
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 150);
+            });
+        });
+
+        // Toast 通知系统
+        function showToast(message, type = 'info') {
+            let container = document.querySelector('.toast-container');
+            if (!container) {
+                container = document.createElement('div');
+                container.className = 'toast-container';
+                document.body.appendChild(container);
+            }
+
+            const iconMap = {
+                success: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>',
+                error: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>',
+                warning: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>',
+                info: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>'
+            };
+
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `
+                <div class="toast-icon">${iconMap[type] || iconMap.info}</div>
+                <div class="toast-message">${message}</div>
+                <button class="toast-close" onclick="this.parentElement.remove()">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"/>
+                        <line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+            `;
+
+            container.appendChild(toast);
+
+            // 3秒后自动移除
+            setTimeout(() => {
+                toast.classList.add('hiding');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // 键盘快捷键
+        document.addEventListener('keydown', (e) => {
+            // Ctrl/Cmd + Enter 发送消息
+            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                if (document.activeElement === chatInput) {
+                    sendMessage();
+                }
+            }
+
+            // Esc 关闭toast
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.toast').forEach(toast => {
+                    toast.remove();
+                });
+            }
+        });
+
+        // 页面加载动画
+        window.addEventListener('load', () => {
+            document.body.style.opacity = '0';
+            document.body.style.transition = 'opacity 0.5s ease';
+            setTimeout(() => {
+                document.body.style.opacity = '1';
+            }, 100);
+        });
+
+        // 初始化
+        updatePrompt();
+        setTimeout(() => {
+            showToast('欢迎使用 EC灼厂 AI创作平台！', 'info');
+        }, 1000);
+    </script>
+</body>
+</html>
